@@ -1,202 +1,159 @@
-import { Plus } from 'lucide-react';
+import React from 'react';
+import { Upload } from 'lucide-react';
 
 interface AdditionalInfoFormProps {
   formData: {
     name: string;
     cpf: string;
-    profession: string;
-    role: string;
-    titles: string[];
-    curriculum: string[];
-    lattesUrl: string;
-    extraInfo: string[];
+    cep: string;
+    address: string;
+    neighborhood: string;
+    number: string;
+    complement: string;
+    state: string;
+    city: string;
+    document: File | null;
+    cnpjLink: string;
   };
   setFormData: (data: any) => void;
   handleSubmit: (e: React.FormEvent) => void;
 }
 
 export function AdditionalInfoForm({ formData, setFormData, handleSubmit }: AdditionalInfoFormProps) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({ ...formData, document: e.target.files[0] });
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center mb-8">Olá, {formData.name}</h2>
+      <h2 className="text-2xl font-bold text-center mb-8">Informações Extras</h2>
       
-      <div className="grid grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nome
-          </label>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.name}
-            disabled
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            CPF
-          </label>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.cpf}
-            disabled
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Profissão
-          </label>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.profession}
-            onChange={(e) => setFormData({...formData, profession: e.target.value})}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Cargo
-          </label>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.role}
-            onChange={(e) => setFormData({...formData, role: e.target.value})}
-          />
-        </div>
-      </div>
-
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Titulação
-        </label>
-        <button
-          type="button"
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
-          onClick={() => {
-            const newTitle = prompt('Digite o título:');
-            if (newTitle) {
-              setFormData({...formData, titles: [...formData.titles, newTitle]});
-            }
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          <span>Adicionar Título</span>
-        </button>
-        {formData.titles.length > 0 && (
-          <div className="mt-2 space-y-2">
-            {formData.titles.map((title, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded">
-                <span>{title}</span>
-                <button
-                  type="button"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => {
-                    const newTitles = formData.titles.filter((_, i) => i !== index);
-                    setFormData({...formData, titles: newTitles});
-                  }}
-                >
-                  Remover
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Currículo
-        </label>
-        <button
-          type="button"
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
-          onClick={() => {
-            const newCurriculum = prompt('Adicione informações ao currículo:');
-            if (newCurriculum) {
-              setFormData({...formData, curriculum: [...formData.curriculum, newCurriculum]});
-            }
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          <span>Adicionar Currículo</span>
-        </button>
-        {formData.curriculum.length > 0 && (
-          <div className="mt-2 space-y-2">
-            {formData.curriculum.map((item, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded">
-                <span>{item}</span>
-                <button
-                  type="button"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => {
-                    const newCurriculum = formData.curriculum.filter((_, i) => i !== index);
-                    setFormData({...formData, curriculum: newCurriculum});
-                  }}
-                >
-                  Remover
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Currículo Lattes
+          CEP
         </label>
         <input
-          type="url"
+          type="text"
           className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          value={formData.lattesUrl}
-          onChange={(e) => setFormData({...formData, lattesUrl: e.target.value})}
-          placeholder="http://lattes.cnpq.br/..."
+          value={formData.cep}
+          onChange={(e) => setFormData({...formData, cep: e.target.value})}
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Informações Extras (Certificados e Qualificações)
+          Endereço
         </label>
-        <button
-          type="button"
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
-          onClick={() => {
-            const newInfo = prompt('Adicione informação extra:');
-            if (newInfo) {
-              setFormData({...formData, extraInfo: [...formData.extraInfo, newInfo]});
-            }
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          <span>Adicionar</span>
-        </button>
-        {formData.extraInfo.length > 0 && (
-          <div className="mt-2 space-y-2">
-            {formData.extraInfo.map((info, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded">
-                <span>{info}</span>
-                <button
-                  type="button"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => {
-                    const newExtraInfo = formData.extraInfo.filter((_, i) => i !== index);
-                    setFormData({...formData, extraInfo: newExtraInfo});
-                  }}
-                >
-                  Remover
-                </button>
-              </div>
-            ))}
+        <input
+          type="text"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          value={formData.address}
+          onChange={(e) => setFormData({...formData, address: e.target.value})}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Bairro
+        </label>
+        <input
+          type="text"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          value={formData.neighborhood}
+          onChange={(e) => setFormData({...formData, neighborhood: e.target.value})}
+        />
+      </div>
+
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Número
+          </label>
+          <input
+            type="text"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={formData.number}
+            onChange={(e) => setFormData({...formData, number: e.target.value})}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Complemento
+          </label>
+          <input
+            type="text"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={formData.complement}
+            onChange={(e) => setFormData({...formData, complement: e.target.value})}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            UF
+          </label>
+          <input
+            type="text"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={formData.state}
+            onChange={(e) => setFormData({...formData, state: e.target.value})}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Cidade
+          </label>
+          <input
+            type="text"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={formData.city}
+            onChange={(e) => setFormData({...formData, city: e.target.value})}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Documento¹
+        </label>
+        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+          <div className="space-y-1 text-center">
+            <Upload className="mx-auto h-12 w-12 text-gray-400" />
+            <div className="flex text-sm text-gray-600">
+              <label
+                htmlFor="file-upload"
+                className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+              >
+                <span>Enviar arquivo</span>
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  className="sr-only"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
+            <p className="text-xs text-gray-500">¹RG, CNH ou Passaporte</p>
           </div>
-        )}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Vínculo CNPJ
+        </label>
+        <input
+          type="text"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          value={formData.cnpjLink}
+          onChange={(e) => setFormData({...formData, cnpjLink: e.target.value})}
+          placeholder="00.000.000/0000-00"
+        />
       </div>
 
       <div className="flex justify-end mt-8">

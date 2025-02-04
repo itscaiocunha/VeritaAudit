@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { LoginForm } from './components/auth/LoginForm';
 import { RegisterForm } from './components/auth/RegisterForm';
 import { AdditionalInfoForm } from './components/auth/AdditionalInfoForm';
+import { QualificationsForm } from './components/auth/QualificationsForm';
+import { BiometricVerification } from './components/auth/BiometricVerification';
 import { ResetPasswordPage } from './components/auth/ResetPasswordPage';
 import { WelcomeScreen } from './components/auth/WelcomeScreen';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 
-type ViewState = 'welcome' | 'login' | 'register' | 'additional' | 'dashboard' | 'reset-password';
+type ViewState = 'welcome' | 'login' | 'register' | 'additional' | 'biometric' | 'qualifications' | 'dashboard' | 'reset-password';
 
 function App() {
   const [currentStep, setCurrentStep] = useState<ViewState>('welcome');
@@ -21,6 +23,16 @@ function App() {
     secondaryEmail: '',
     password: '',
     // Additional Info
+    cep: '',
+    address: '',
+    neighborhood: '',
+    number: '',
+    complement: '',
+    state: '',
+    city: '',
+    document: null as File | null,
+    cnpjLink: '',
+    // Qualifications
     profession: '',
     role: '',
     titles: [] as string[],
@@ -33,10 +45,12 @@ function App() {
     e.preventDefault();
     if (currentStep === 'register') {
       setCurrentStep('additional');
+    } else if (currentStep === 'additional') {
+      setCurrentStep('biometric');
+    } else if (currentStep === 'qualifications') {
+      setCurrentStep('dashboard');
     } else if (currentStep === 'login') {
       setCurrentStep('dashboard');
-    } else {
-      console.log('Form submitted:', formData);
     }
   };
 
@@ -47,7 +61,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {currentStep !== 'welcome' && <Header />}
+     {currentStep !== 'welcome' && <Header />}
 
       {/* Main Content */}
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -55,14 +69,18 @@ function App() {
           <WelcomeScreen setCurrentStep={setCurrentStep} />
         ) : currentStep === 'reset-password' ? (
           <ResetPasswordPage onSubmit={handlePasswordReset} />
-        ) : currentStep !== 'dashboard' ? (
+        ) : currentStep === 'biometric' ? (
+          <BiometricVerification onComplete={() => setCurrentStep('qualifications')} />
+        ) : currentStep === 'dashboard' ? (
+          <Dashboard formData={formData} setCurrentStep={setCurrentStep} />
+        ) : (
           <div className="w-full flex gap-8">
             {/* Left Side - Form */}
             <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-lg p-8">
               <h1 className="text-2xl font-bold mb-2 text-gray-800">
                 {currentStep === 'login' ? 'LOGIN' : 'CADASTRO'}
               </h1>
-              {currentStep !== 'additional' && (
+              {currentStep !== 'additional' && currentStep !== 'qualifications' && (
                 <p className="text-gray-600 mb-8">
                   {currentStep === 'login'
                     ? 'Acesse sua conta gov.br'
@@ -93,6 +111,13 @@ function App() {
                   handleSubmit={handleSubmit}
                 />
               )}
+              {currentStep === 'qualifications' && (
+                <QualificationsForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  handleSubmit={handleSubmit}
+                />
+              )}
             </div>
 
             {/* Right Side - Image */}
@@ -104,8 +129,6 @@ function App() {
               />
             </div>
           </div>
-        ) : (
-          <Dashboard formData={formData} setCurrentStep={setCurrentStep} />
         )}
       </main>
 
