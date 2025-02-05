@@ -9,6 +9,6 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>
 );
 
-fetch('http://localhost:5000/')
+fetch('https://backend-verita-audit.vercel.app/')
   .then(res => res.json())
   .then(data => console.log(data));
