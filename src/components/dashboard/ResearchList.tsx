@@ -26,7 +26,7 @@ export function ResearchList() {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-4 lg:p-6">
       <h2 className="text-xl font-bold mb-4">Pesquisas Recentes</h2>
       <div className="space-y-4">
         {researches.map((research) => (
@@ -34,7 +34,7 @@ export function ResearchList() {
             key={research.id}
             className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
           >
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-4 mb-2">
               <div>
                 <h3 className="font-semibold text-lg text-gray-800">
                   {research.title}
@@ -45,7 +45,7 @@ export function ResearchList() {
                 </div>
               </div>
               <span
-                className={`px-3 py-1 rounded-full text-sm ${
+                className={`px-3 py-1 rounded-full text-sm w-fit ${
                   research.status === 'Concluído'
                     ? 'bg-green-100 text-green-800'
                     : research.status === 'Em revisão'
@@ -56,7 +56,7 @@ export function ResearchList() {
                 {research.status}
               </span>
             </div>
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-gray-600 mt-2">
               <Calendar className="h-4 w-4 mr-1" />
               <span>Última atualização: {research.lastUpdate}</span>
             </div>

@@ -29,7 +29,7 @@ export function ProjectList() {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-4 lg:p-6">
       <h2 className="text-xl font-bold mb-4">Projetos Ativos</h2>
       <div className="space-y-4">
         {projects.map((project) => (
@@ -37,16 +37,16 @@ export function ProjectList() {
             key={project.id}
             className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
           >
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-4 mb-2">
               <h3 className="font-semibold text-lg text-gray-800">
                 {project.title}
               </h3>
-              <span className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+              <span className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 w-fit">
                 {project.status}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
                   <span>Prazo: {project.deadline}</span>

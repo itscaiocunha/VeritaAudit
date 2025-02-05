@@ -60,11 +60,11 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
-     {currentStep !== 'welcome' && <Header />}
+    <div className={`min-h-screen flex flex-col ${currentStep === 'dashboard' ? 'h-screen' : ''}`}>
+      <Header />
 
       {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className={`flex-grow ${currentStep === 'dashboard' ? 'h-[calc(100vh-4rem)]' : ''}`}>
         {currentStep === 'welcome' ? (
           <WelcomeScreen setCurrentStep={setCurrentStep} />
         ) : currentStep === 'reset-password' ? (
@@ -74,65 +74,67 @@ function App() {
         ) : currentStep === 'dashboard' ? (
           <Dashboard formData={formData} setCurrentStep={setCurrentStep} />
         ) : (
-          <div className="w-full flex gap-8">
-            {/* Left Side - Form */}
-            <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-lg p-8">
-              <h1 className="text-2xl font-bold mb-2 text-gray-800">
-                {currentStep === 'login' ? 'LOGIN' : 'CADASTRO'}
-              </h1>
-              {currentStep !== 'additional' && currentStep !== 'qualifications' && (
-                <p className="text-gray-600 mb-8">
-                  {currentStep === 'login'
-                    ? 'Acesse sua conta gov.br'
-                    : 'Cadastre-se para acessar os serviços públicos digitais'}
-                </p>
-              )}
+          <div className="container mx-auto px-4 py-8">
+            <div className="w-full flex gap-8">
+              {/* Left Side - Form */}
+              <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-lg p-8">
+                <h1 className="text-2xl font-bold mb-2 text-gray-800">
+                  {currentStep === 'login' ? 'LOGIN' : 'CADASTRO'}
+                </h1>
+                {currentStep !== 'additional' && currentStep !== 'qualifications' && (
+                  <p className="text-gray-600 mb-8">
+                    {currentStep === 'login'
+                      ? 'Acesse sua conta gov.br'
+                      : 'Cadastre-se para acessar os serviços públicos digitais'}
+                  </p>
+                )}
 
-              {currentStep === 'login' && (
-                <LoginForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  setCurrentStep={setCurrentStep}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {currentStep === 'register' && (
-                <RegisterForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  setCurrentStep={setCurrentStep}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {currentStep === 'additional' && (
-                <AdditionalInfoForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {currentStep === 'qualifications' && (
-                <QualificationsForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-            </div>
+                {currentStep === 'login' && (
+                  <LoginForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    setCurrentStep={setCurrentStep}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {currentStep === 'register' && (
+                  <RegisterForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    setCurrentStep={setCurrentStep}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {currentStep === 'additional' && (
+                  <AdditionalInfoForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {currentStep === 'qualifications' && (
+                  <QualificationsForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+              </div>
 
-            {/* Right Side - Image */}
-            <div className="hidden lg:block w-1/2">
-              <img 
-                src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80"
-                alt="Palácio do Planalto"
-                className="w-full h-full object-cover rounded-lg"
-              />
+              {/* Right Side - Image */}
+              <div className="hidden lg:block w-1/2">
+                <img 
+                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80"
+                  alt="Palácio do Planalto"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
             </div>
           </div>
         )}
       </main>
 
-      {currentStep !== 'welcome' && <Footer />}
+      {currentStep !== 'dashboard' && <Footer />}
     </div>
   );
 }
