@@ -8,3 +8,7 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>
 );
+
+fetch('http://localhost:5000/')
+  .then(res => res.json())
+  .then(data => console.log(data));
