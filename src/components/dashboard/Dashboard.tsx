@@ -31,7 +31,7 @@ export function Dashboard({ formData }: DashboardProps) {
         <Sidebar
           currentPage={currentPage}
           onPageChange={(page: PageType) => setCurrentPage(page)}
-          isCollapsed={!isSidebarOpen}
+          // isCollapsed={!isSidebarOpen}
           onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
         />
       </div>
