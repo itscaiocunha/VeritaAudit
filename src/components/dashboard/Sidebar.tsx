@@ -1,4 +1,4 @@
-import { Home, FileText, Building2, FlaskRound as Flask, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, FileText, Building2, FlaskRound as Flask, User } from 'lucide-react';
 
 type Page = "home" | "projects" | "universities" | "labs" | "profile";
 
@@ -9,7 +9,7 @@ interface SidebarProps {
   onToggle?: () => void;
 }
 
-export function Sidebar({ currentPage, onPageChange, isCollapsed = false, onToggle }: SidebarProps) {
+export function Sidebar({ currentPage, onPageChange, isCollapsed = false }: SidebarProps) {
   const menuItems: { id: Page; label: string; icon: React.ElementType }[] = [
     { id: "home", label: "Home", icon: Home },
     { id: "projects", label: "Projetos/Pesquisas", icon: FileText },
@@ -27,7 +27,7 @@ export function Sidebar({ currentPage, onPageChange, isCollapsed = false, onTogg
       {/* Cabeçalho do menu */}
       <div className="p-4 flex items-center justify-between border-b">
         {!isCollapsed && <span className="font-semibold text-gray-800">Menu</span>}
-        <button
+        {/* <button
           onClick={onToggle}
           className="p-1 hover:bg-gray-100 rounded-md hidden lg:block"
         >
@@ -36,7 +36,7 @@ export function Sidebar({ currentPage, onPageChange, isCollapsed = false, onTogg
           ) : (
             <ChevronLeft className="h-5 w-5 text-gray-600" />
           )}
-        </button>
+        </button> */}
       </div>
 
       {/* Navegação */}
