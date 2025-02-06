@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -30,34 +31,47 @@ interface AuthContextType {
   handleLogin: (email: string, password: string) => Promise<void>;
   handleRegister: () => Promise<void>;
   completeRegistration: () => void;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    cpf: "",
-    phone: "",
-    primaryEmail: "",
-    secondaryEmail: "",
-    password: "",
-    cep: "",
-    address: "",
-    neighborhood: "",
-    number: "",
-    complement: "",
-    state: "",
-    city: "",
-    document: null,
-    cnpjLink: "",
-    profession: "",
-    role: "",
-    titles: [],
-    curriculum: [],
-    lattesUrl: "",
-    extraInfo: [],
+  const navigate = useNavigate();
+
+  // Recupera do localStorage
+  const [formData, setFormData] = useState<FormData>(() => {
+    const savedData = localStorage.getItem("formData");
+    return savedData ? JSON.parse(savedData) : {
+      name: "",
+      cpf: "",
+      phone: "",
+      primaryEmail: "",
+      secondaryEmail: "",
+      password: "",
+      cep: "",
+      address: "",
+      neighborhood: "",
+      number: "",
+      complement: "",
+      state: "",
+      city: "",
+      document: null,
+      cnpjLink: "",
+      profession: "",
+      role: "",
+      titles: [],
+      curriculum: [],
+      lattesUrl: "",
+      extraInfo: [],
+    };
   });
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem("token"));
+
+  useEffect(() => {
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }, [formData]);
 
   // 🔹 Função para fazer login
   const handleLogin = async (email: string, password: string) => {
@@ -80,7 +94,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       localStorage.setItem("token", data.token);
-      window.location.href = "/dashboard"; // Redireciona para o dashboard
+      setIsAuthenticated(true);
+      navigate("/dashboard");
     } catch (error: any) {
       alert(error.message);
     }
@@ -113,7 +128,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error(data.message || "Erro ao registrar usuário");
       }
 
-      window.location.href = "/additional-info"; // Redireciona para a próxima etapa
+      navigate("/additional-info");
     } catch (error: any) {
       alert(error.message);
     }
@@ -122,11 +137,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // 🔹 Função para completar o registro após a biometria
   const completeRegistration = () => {
     console.log("Registro concluído com sucesso!");
-    window.location.href = "/dashboard"; // Redireciona para o dashboard após a biometria
+    navigate("/dashboard");
   };
 
   return (
-    <AuthContext.Provider value={{ formData, setFormData, handleLogin, handleRegister, completeRegistration }}>
+    <AuthContext.Provider value={{ formData, setFormData, handleLogin, handleRegister, completeRegistration, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
