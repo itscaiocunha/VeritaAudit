@@ -1,33 +1,33 @@
-import { Eye } from 'lucide-react';
-import { useState } from 'react';
-import { ForgotPasswordModal } from './ForgotPasswordModal';
+import { useState } from "react";
+import { Eye } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { ForgotPasswordModal } from "./ForgotPasswordModal";
+import { useNavigate } from "react-router-dom";
 
-interface LoginFormProps {
-  formData: {
-    primaryEmail: string;
-    password: string;
-  };
-  setFormData: (data: any) => void;
-  setCurrentStep: (step: 'login' | 'register' | 'additional' | 'dashboard' | 'reset-password') => void;
-  handleSubmit: (e: React.FormEvent) => void;
-}
-
-export function LoginForm({ formData, setFormData, setCurrentStep, handleSubmit }: LoginFormProps) {
+export function LoginForm() {
+  const { handleLogin } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleForgotPassword = (email: string) => {
-    // Here you would implement the password recovery logic
-    console.log('Password recovery requested for:', email);
-    setIsModalOpen(false);
-    // Simulate email sent, then redirect to reset password page
-    setTimeout(() => {
-      setCurrentStep('reset-password');
-    }, 1000);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(""); // Reseta erro antes de tentar logar
+
+    try {
+      await handleLogin(email, password);
+    } catch (err: any) {
+      setError(err.message); // Exibe mensagem de erro
+    }
   };
 
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {error && <p className="text-red-500">{error}</p>}
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             E-mail
@@ -35,8 +35,8 @@ export function LoginForm({ formData, setFormData, setCurrentStep, handleSubmit 
           <input
             type="email"
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.primaryEmail}
-            onChange={(e) => setFormData({...formData, primaryEmail: e.target.value})}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -48,8 +48,8 @@ export function LoginForm({ formData, setFormData, setCurrentStep, handleSubmit 
             <input
               type="password"
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <button
               type="button"
@@ -79,7 +79,7 @@ export function LoginForm({ formData, setFormData, setCurrentStep, handleSubmit 
           
           <button
             type="button"
-            onClick={() => setCurrentStep('register')}
+            onClick={() => navigate("/register")}
             className="text-sm text-blue-600 hover:text-blue-800"
           >
             Não possuo login!
@@ -90,7 +90,7 @@ export function LoginForm({ formData, setFormData, setCurrentStep, handleSubmit 
       <ForgotPasswordModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleForgotPassword}
+        onSubmit={() => console.log("Redefinir senha")}
       />
     </>
   );

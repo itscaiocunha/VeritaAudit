@@ -1,43 +1,48 @@
-import React, { useState } from 'react';
-import { Eye } from 'lucide-react';
+import React, { useState } from "react";
+import { Eye } from "lucide-react";
 
 interface ResetPasswordPageProps {
-  onSubmit: (newPassword: string) => void;
+  onSubmit?: (newPassword: string) => void;
 }
 
 export function ResetPasswordPage({ onSubmit }: ResetPasswordPageProps) {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
-      setError('As senhas não coincidem');
+      setError("As senhas não coincidem");
       return;
     }
-    
+
     if (newPassword.length < 8) {
-      setError('A senha deve ter pelo menos 8 caracteres');
+      setError("A senha deve ter pelo menos 8 caracteres");
       return;
     }
-    
-    onSubmit(newPassword);
+
+    try {
+      onSubmit?.(newPassword);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
+      setError(errorMessage);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* <Header /> */}
-      
+
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-2xl font-bold text-center mb-6">
             Crie uma nova senha
           </h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -47,7 +52,7 @@ export function ResetPasswordPage({ onSubmit }: ResetPasswordPageProps) {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
                   required
                 />
@@ -69,7 +74,7 @@ export function ResetPasswordPage({ onSubmit }: ResetPasswordPageProps) {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
                   required
                 />
@@ -83,9 +88,7 @@ export function ResetPasswordPage({ onSubmit }: ResetPasswordPageProps) {
               </div>
             </div>
 
-            {error && (
-              <p className="text-red-500 text-sm text-center">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
             <div className="flex justify-center">
               <button
