@@ -41,7 +41,7 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ title, description, childre
 };
 
 function App() {
-  const [formData] = useState({
+  const [] = useState({
     name: "",
     cpf: "",
     phone: "",
@@ -107,7 +107,7 @@ function App() {
               />
               <Route path="/biometric" element={<BiometricVerification />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/dashboard" element={<Dashboard formData={formData} />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>

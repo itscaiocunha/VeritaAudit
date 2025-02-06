@@ -8,14 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 type PageType = "home" | "projects" | "universities" | "labs" | "profile";
 
-interface DashboardProps {
-  formData: {
-    name: string;
-  };
-  setCurrentStep?: (step: "login" | "register" | "additional" | "dashboard") => void;
-}
-
-export function Dashboard({ formData }: DashboardProps) {
+export function Dashboard() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
@@ -31,7 +24,6 @@ export function Dashboard({ formData }: DashboardProps) {
         <Sidebar
           currentPage={currentPage}
           onPageChange={(page: PageType) => setCurrentPage(page)}
-          // isCollapsed={!isSidebarOpen}
           onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
         />
       </div>
@@ -48,7 +40,7 @@ export function Dashboard({ formData }: DashboardProps) {
               <Menu className="h-6 w-6 text-gray-600" />
             </button>
             <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
-              Bem-vindo(a), {formData.name || "Usuário"}
+              Bem-vindo(a)
             </h2>
             <button
               onClick={() => navigate("/welcome")}
