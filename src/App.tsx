@@ -10,7 +10,7 @@ import { Dashboard } from "./components/dashboard/Dashboard";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 
-type ViewState = 
+type ViewState =
   | "welcome"
   | "login"
   | "register"
@@ -46,6 +46,7 @@ function App() {
     extraInfo: [] as string[],
   });
 
+  // 🔹 Função para fazer login
   const handleLogin = async (email: string, password: string) => {
     if (!email || !password) {
       alert("Preencha todos os campos!");
@@ -66,23 +67,53 @@ function App() {
       }
 
       localStorage.setItem("token", data.token);
-      setCurrentStep("dashboard");
+      setCurrentStep("dashboard"); // Redireciona para o dashboard
     } catch (error: any) {
       alert(error.message);
     }
   };
 
+  // 🔹 Função para registrar novo usuário
+  const handleRegister = async () => {
+    if (!formData.name || !formData.cpf || !formData.phone || !formData.primaryEmail || !formData.secondaryEmail || !formData.password) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/registro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: formData.name,
+          cpf: formData.cpf,
+          telefone: formData.phone,
+          email1: formData.primaryEmail,
+          email2: formData.secondaryEmail,
+          senha: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Erro ao registrar usuário");
+      }
+
+      setCurrentStep("additional"); // Passa para a próxima etapa
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
+  // 🔹 Gerenciador de envio de formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (currentStep === "login") {
       await handleLogin(formData.primaryEmail, formData.password);
     } else if (currentStep === "register") {
-      setCurrentStep("additional");
-    } else if (currentStep === "additional") {
-      setCurrentStep("biometric");
-    } else if (currentStep === "qualifications") {
-      setCurrentStep("dashboard");
+      await handleRegister();
     }
   };
 
