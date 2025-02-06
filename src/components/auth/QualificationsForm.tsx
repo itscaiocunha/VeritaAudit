@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../../contexts/AuthContext"; // Importa o contexto de autenticação
 import { Plus } from "lucide-react";
+import FormTemplate from "./FormTemplate";
 
 export function QualificationsForm() {
   const { formData, setFormData } = useAuth(); // Obtém os dados do contexto
@@ -12,6 +13,7 @@ export function QualificationsForm() {
   };
 
   return (
+    <FormTemplate title="" description="">
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-2xl font-bold text-center mb-8">Qualificações e Times</h2>
 
@@ -85,5 +87,6 @@ export function QualificationsForm() {
         </button>
       </div>
     </form>
+    </FormTemplate>
   );
 }

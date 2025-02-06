@@ -3,6 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
 import { useNavigate } from "react-router-dom";
+import FormTemplate from "./FormTemplate";
 
 export function LoginForm() {
   const { handleLogin } = useAuth();
@@ -11,28 +12,25 @@ export function LoginForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Reseta erro antes de tentar logar
-
+    setError("");
     try {
       await handleLogin(email, password);
     } catch (err: any) {
-      setError(err.message); // Exibe mensagem de erro
+      setError(err.message);
     }
   };
 
   return (
-    <>
+    <FormTemplate title="LOGIN" description="Acesse sua conta">
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && <p className="text-red-500">{error}</p>}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            E-mail
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
           <input
             type="email"
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -42,9 +40,7 @@ export function LoginForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Senha
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -52,13 +48,13 @@ export function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-          <button
-            type="button"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-          </button>
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
           </div>
           <div className="mt-1 text-right">
             <button
@@ -94,6 +90,6 @@ export function LoginForm() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={() => console.log("Redefinir senha")}
       />
-    </>
+    </FormTemplate>
   );
 }

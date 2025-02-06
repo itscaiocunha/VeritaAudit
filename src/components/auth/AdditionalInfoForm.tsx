@@ -1,6 +1,7 @@
 import React from "react";
 import { Upload } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import FormTemplate from "./FormTemplate";
 
 export function AdditionalInfoForm() {
   const { formData, setFormData, handleRegister } = useAuth();
@@ -12,6 +13,7 @@ export function AdditionalInfoForm() {
   };
 
   return (
+    <FormTemplate title="" description="">
     <form onSubmit={handleRegister} className="space-y-6">
       <h2 className="text-2xl font-bold text-center mb-8">Informações Extras</h2>
 
@@ -139,5 +141,6 @@ export function AdditionalInfoForm() {
         </button>
       </div>
     </form>
+    </FormTemplate>
   );
 }

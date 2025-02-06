@@ -1,7 +1,8 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";  // Importa o contexto de autenticação
+import { useAuth } from "../../contexts/AuthContext";
+import FormTemplate from "./FormTemplate";
 
 export function RegisterForm() {
   const { formData, setFormData, handleRegister } = useAuth();
@@ -14,7 +15,9 @@ export function RegisterForm() {
   };
 
   return (
+    <FormTemplate title="" description="">
     <form onSubmit={handleSubmit} className="space-y-6">
+      <h2 className="text-2xl font-bold text-center mb-8">Cadastre-se na plataforma</h2>
       {/* Nome */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -120,5 +123,6 @@ export function RegisterForm() {
         </button>
       </div>
     </form>
+    </FormTemplate>
   );
 }
