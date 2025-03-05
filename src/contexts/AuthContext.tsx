@@ -30,6 +30,8 @@ interface AuthContextType {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   handleLogin: (email: string, password: string) => Promise<void>;
   handleRegister: () => Promise<void>;
+  handleAdditionalInfo: () => Promise<void>;
+  handleQualification: () => Promise<void>;
   completeRegistration: () => void;
   isAuthenticated: boolean;
 }
@@ -42,29 +44,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Recupera do localStorage
   const [formData, setFormData] = useState<FormData>(() => {
     const savedData = localStorage.getItem("formData");
-    return savedData ? JSON.parse(savedData) : {
-      name: "",
-      cpf: "",
-      phone: "",
-      primaryEmail: "",
-      secondaryEmail: "",
-      password: "",
-      cep: "",
-      address: "",
-      neighborhood: "",
-      number: "",
-      complement: "",
-      state: "",
-      city: "",
-      document: null,
-      cnpjLink: "",
-      profession: "",
-      role: "",
-      titles: [],
-      curriculum: [],
-      lattesUrl: "",
-      extraInfo: [],
-    };
+    return savedData
+      ? { ...JSON.parse(savedData), document: null } // Garante que document não cause erro
+      : {
+          name: "",
+          cpf: "",
+          phone: "",
+          primaryEmail: "",
+          secondaryEmail: "",
+          password: "",
+          cep: "",
+          address: "",
+          neighborhood: "",
+          number: "",
+          complement: "",
+          state: "",
+          city: "",
+          document: null,
+          cnpjLink: "",
+          profession: "",
+          role: "",
+          titles: [],
+          curriculum: [],
+          lattesUrl: "",
+          extraInfo: [],
+        };
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem("token"));
@@ -103,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // 🔹 Função para registrar novo usuário
   const handleRegister = async () => {
-    if (!formData.name || !formData.cpf || !formData.phone || !formData.primaryEmail || !formData.secondaryEmail || !formData.password) {
+    if (!formData.name || !formData.cpf || !formData.phone || !formData.primaryEmail || !formData.password) {
       alert("Preencha todos os campos obrigatórios!");
       return;
     }
@@ -134,6 +138,80 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // 🔹 Função para adicionar informações ao novo usuário
+  const handleAdditionalInfo = async () => {
+    if (!formData.cep || !formData.address || !formData.neighborhood || !formData.number || !formData.state || !formData.city || !formData.cpf) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://backend-verita-audit.vercel.app/api/auth/info", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Se necessário
+        },
+        body: JSON.stringify({
+          cep: formData.cep,
+          endereco: formData.address,
+          bairro: formData.neighborhood,
+          numero: formData.number,
+          complemento: formData.complement,
+          uf: formData.state,
+          cidade: formData.city,
+          cnpj: formData.cnpjLink,
+          cpf: formData.cpf,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Erro ao enviar informações adicionais");
+      }
+
+      alert("Informações adicionais cadastradas com sucesso!");
+      navigate("/qualifications");
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
+  // 🔹 Função para adicionar qualificações
+  const handleQualification = async () => {
+    if (!formData.profession || !formData.role || !formData.lattesUrl || !formData.cpf) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://backend-verita-audit.vercel.app/api/auth/qualificacao", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Adicionado para manter consistência
+        },
+        body: JSON.stringify({
+          profissao: formData.profession,
+          cargo: formData.role,
+          lattes: formData.lattesUrl,
+          cpf: formData.cpf,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Erro ao registrar usuário");
+      }
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   // 🔹 Função para completar o registro após a biometria
   const completeRegistration = () => {
     console.log("Registro concluído com sucesso!");
@@ -141,7 +219,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ formData, setFormData, handleLogin, handleRegister, completeRegistration, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{
+        formData,
+        setFormData,
+        handleLogin,
+        handleRegister,
+        completeRegistration,
+        handleAdditionalInfo,
+        handleQualification,
+        isAuthenticated,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

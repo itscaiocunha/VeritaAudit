@@ -1,146 +1,151 @@
-import React from "react";
-import { Upload } from "lucide-react";
+import { useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import FormTemplate from "./FormTemplate";
 
 export function AdditionalInfoForm() {
-  const { formData, setFormData, handleRegister } = useAuth();
+  const { formData, setFormData, handleAdditionalInfo } = useAuth();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, document: e.target.files[0] });
+  const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cep = e.target.value.replace(/\D/g, ""); // Remove caracteres não numéricos
+    setFormData({ ...formData, cep });
+  };
+
+  const fetchAddress = async (cep: string) => {
+    if (cep.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setFormData({
+            ...formData,
+            address: data.logradouro || "",
+            neighborhood: data.bairro || "",
+            city: data.localidade || "",
+            state: data.uf || "",
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar CEP", error);
+      }
     }
   };
 
+  useEffect(() => {
+    if (formData.cep) {
+      fetchAddress(formData.cep);
+    }
+  }, [formData.cep]);
+
   return (
     <FormTemplate title="" description="">
-    <form onSubmit={handleRegister} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center mb-8">Informações Extras</h2>
+      <form onSubmit={(e) => { e.preventDefault(); handleAdditionalInfo(); }} className="space-y-6">
+        <h2 className="text-2xl font-bold text-center mb-8">Informações Extras</h2>
 
-      {/* CEP */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">CEP</label>
-        <input
-          type="text"
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          value={formData.cep}
-          onChange={(e) => setFormData({ ...formData, cep: e.target.value })}
-        />
-      </div>
-
-      {/* Endereço */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
-        <input
-          type="text"
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-        />
-      </div>
-
-      {/* Bairro */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
-        <input
-          type="text"
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          value={formData.neighborhood}
-          onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-        />
-      </div>
-
-      {/* Grid: Número, Complemento, UF, Cidade */}
-      <div className="grid grid-cols-4 gap-4">
+        {/* CEP */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Número</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">CEP</label>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.number}
-            onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+            value={formData.cep}
+            onChange={handleCepChange}
           />
         </div>
 
+        {/* Endereço */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Complemento</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.complement}
-            onChange={(e) => setFormData({ ...formData, complement: e.target.value })}
+            value={formData.address}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+              setFormData({ ...formData, address: e.target.value })}
           />
         </div>
 
+        {/* Bairro */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">UF</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.state}
-            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+            value={formData.neighborhood}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+              setFormData({ ...formData, neighborhood: e.target.value })}
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={formData.city}
-            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-          />
-        </div>
-      </div>
+        {/* Grid: Número, Complemento, UF, Cidade */}
+        <div className="grid grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Número</label>
+            <input
+              type="text"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={formData.number}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                setFormData({ ...formData, number: e.target.value })}
+            />
+          </div>
 
-      {/* Upload de Documento */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Documento¹</label>
-        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-          <div className="space-y-1 text-center">
-            <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <div className="flex text-sm text-gray-600">
-              <label
-                htmlFor="file-upload"
-                className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-              >
-                <span>Enviar arquivo</span>
-                <input
-                  id="file-upload"
-                  name="file-upload"
-                  type="file"
-                  className="sr-only"
-                  onChange={handleFileChange}
-                />
-              </label>
-            </div>
-            <p className="text-xs text-gray-500">¹RG, CNH ou Passaporte</p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Complemento</label>
+            <input
+              type="text"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={formData.complement}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                setFormData({ ...formData, complement: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">UF</label>
+            <input
+              type="text"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={formData.state}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                setFormData({ ...formData, state: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+            <input
+              type="text"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={formData.city}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                setFormData({ ...formData, city: e.target.value })}
+            />
           </div>
         </div>
-      </div>
 
-      {/* Vínculo CNPJ */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Vínculo CNPJ</label>
-        <input
-          type="text"
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          value={formData.cnpjLink}
-          onChange={(e) => setFormData({ ...formData, cnpjLink: e.target.value })}
-          placeholder="00.000.000/0000-00"
-        />
-      </div>
+        {/* Vínculo CNPJ */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Vínculo CNPJ</label>
+          <input
+            type="text"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={formData.cnpjLink}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+              setFormData({ ...formData, cnpjLink: e.target.value })}
+            placeholder="00.000.000/0000-00"
+          />
+        </div>
 
-      {/* Botão de Finalização */}
-      <div className="flex justify-end mt-8">
-        <button
-          type="submit"
-          className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-        >
-          Finalizar
-        </button>
-      </div>
-    </form>
+        {/* Botão de Finalização */}
+        <div className="flex justify-end mt-8">
+          <button
+            type="submit"
+            className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800 focus:ring-2 focus:ring-blue-500"
+          >
+            Finalizar
+          </button>
+        </div>
+      </form>
     </FormTemplate>
   );
 }
