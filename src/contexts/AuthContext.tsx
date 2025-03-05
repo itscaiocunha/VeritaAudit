@@ -171,7 +171,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error(data.message || "Erro ao enviar informações adicionais");
       }
 
-      alert("Informações adicionais cadastradas com sucesso!");
       navigate("/qualifications");
     } catch (error: any) {
       alert(error.message);
