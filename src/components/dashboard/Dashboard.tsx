@@ -1,6 +1,4 @@
 import { Search, Menu } from 'lucide-react';
-import { ProjectList } from './ProjectList';
-import { ResearchList } from './ResearchList';
 import { StatsOverview } from './StatsOverview';
 import { Sidebar } from './Sidebar';
 import { useState } from 'react';
@@ -55,8 +53,6 @@ export function Dashboard() {
           {currentPage === "home" && (
             <>
               <StatsOverview />
-              <ProjectList />
-              <ResearchList />
             </>
           )}
         </div>
