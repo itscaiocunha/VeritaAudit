@@ -1,23 +1,21 @@
-import { Search, LogOut, Menu } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { ProjectList } from './ProjectList';
 import { ResearchList } from './ResearchList';
 import { StatsOverview } from './StatsOverview';
 import { Sidebar } from './Sidebar';
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
 
 type PageType = "home" | "projects" | "universities" | "labs" | "profile";
 
 export function Dashboard() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const navigate = useNavigate();
 
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div
-        className={`fixed lg:static z-50 h-full transition-all duration-300 bg-white shadow-lg ${
+        className={`fixed lg:static z-40 h-full transition-all duration-300 bg-white shadow-lg ${
           isSidebarOpen ? "w-64" : "w-16"
         } lg:w-64 lg:block ${isSidebarOpen ? "block" : "hidden"} md:flex`}
       >
@@ -30,27 +28,19 @@ export function Dashboard() {
       
       {/* Conteúdo Principal */}
       <div className="flex-1 h-screen overflow-y-auto p-4 lg:p-8 bg-gray-50 transition-all duration-300">
-        {/* Cabeçalho e Barra de Pesquisa */}
-        <div className="sticky top-0 bg-gray-50 z-50 p-4 shadow-md flex flex-col space-y-4">
-          <div className="flex justify-between items-center">
+        {/* Navbar Fixa e Sobrepondo Conteúdo */}
+        <div className=" top-0 left-0 w-full bg-white z-50 shadow-md p-4 flex flex-col space-y-4 lg:flex-row lg:justify-between lg:items-center">
+          <div className="flex justify-between items-center w-full">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="lg:hidden bg-white p-2 rounded-md shadow-md"
             >
               <Menu className="h-6 w-6 text-gray-600" />
             </button>
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
-              Bem-vindo(a)
-            </h2>
-            <button
-              onClick={() => navigate("/welcome")}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Sair</span>
-            </button>
+
+            <span className="text-xl font-semibold">VeritaAudit</span>
           </div>
-          <div className="relative">
+          <div className="relative w-full lg:w-96">
             <input
               type="text"
               placeholder="Pesquisar projetos ou pesquisas..."
@@ -60,14 +50,16 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Renderização de Conteúdo por Página */}
-        {currentPage === "home" && (
-          <div className="space-y-6 lg:space-y-12 mt-12">
-            <StatsOverview />
-            <ProjectList />
-            <ResearchList />
-          </div>
-        )}
+        {/* Espaço para compensar a navbar fixa */}
+        <div className="mt-24 lg:mt-28 space-y-6 lg:space-y-12">
+          {currentPage === "home" && (
+            <>
+              <StatsOverview />
+              <ProjectList />
+              <ResearchList />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
